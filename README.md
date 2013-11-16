@@ -1,4 +1,4 @@
 shuffle
 =======
 
-Folder maker/organizer for photographers
+Folder maker for photographers
