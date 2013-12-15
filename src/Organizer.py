@@ -17,6 +17,8 @@ class OrganizerInterface(QDialog):
 		self.setWindowTitle('Organizer')
 		self.setMinimumSize(700,500)
 		#self.resize(700, 500)
+		
+		filters_list = ['*.png','*.jpg','*.img']
 		# Create widgets
 		self.pb_Browse = QPushButton("Open Directory")  
 		self.pb_Browse.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
@@ -24,8 +26,11 @@ class OrganizerInterface(QDialog):
 		self.pb_Close.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
 		self.treeViewLeft = QTreeView()	
 		self.modelLeft = QFileSystemModel()
+		self.modelLeft.setNameFilters(filters_list)
 		self.treeViewLeft.setModel(self.modelLeft)
-		
+		self.treeViewRight = QTreeView()
+		self.proxyModelRight = QSortFilterProxyModel()
+		self.proxyModelRight.setSourceModel(self.modelLeft)
 
 
 		# Create layout and add widgets
@@ -36,17 +41,19 @@ class OrganizerInterface(QDialog):
 		#Second Line
 			#First Column
 		layout_main.addWidget(self.treeViewLeft,1,0)
+			#SecondColumn (3rd in fact)
+		layout_main.addWidget(self.treeViewRight,1,1)
 		#Third Line
-			#First Column
-		layout_main.addWidget(self.pb_Close,2,0,Qt.AlignRight)
+			#Second Column
+		layout_main.addWidget(self.pb_Close,2,1,Qt.AlignRight)
 		
 		# Set dialog layout
 		self.setLayout(layout_main)
 
-		# Add button signal to greetings slot
+		# Add buttons
 		self.pb_Browse.clicked.connect(self.browseDir)
 		self.pb_Close.clicked.connect(self.close)
-	# Greets the user
+	
 	def browseDir(self):
 		dialog = QFileDialog()
 		dialog.setFileMode(QFileDialog.Directory)
@@ -56,7 +63,6 @@ class OrganizerInterface(QDialog):
 		if result:
 			self.modelLeft.setRootPath(dialog.selectedFiles()[0])
 			self.treeViewLeft.setRootIndex(self.modelLeft.index(dialog.selectedFiles()[0]))
-			self.modelLeft.setRootPath("D:/Photos")
 			print (dialog.selectedFiles())
     
 
